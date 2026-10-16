@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starrypad Interface</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <h1>🥁 Starrypad Interface</h1>
+                <span class="version">v1.0</span>
+            </div>
+            <div class="controls">
+                <button id="debug-toggle" class="btn debug-btn">Debug Mode: ON</button>
+                <div class="connection-status">
+                    <span id="midi-status" class="status-indicator">MIDI: ❌</span>
+                    <span id="ws-status" class="status-indicator">WS: ❌</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Starrypad Visual Interface -->
+            <section class="starrypad-container">
+                <div class="starrypad-frame">
+                    <div class="starrypad-grid">
+                        <!-- Row 1 (Top) -->
+                        <div class="pad" data-pad-id="0" data-sound="perc1">
+                            <div class="pad-surface">
+                                <span class="pad-label">PERC 1</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="1" data-sound="perc2">
+                            <div class="pad-surface">
+                                <span class="pad-label">PERC 2</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="2" data-sound="perc3">
+                            <div class="pad-surface">
+                                <span class="pad-label">PERC 3</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="3" data-sound="perc4">
+                            <div class="pad-surface">
+                                <span class="pad-label">PERC 4</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Row 2 -->
+                        <div class="pad" data-pad-id="4" data-sound="tom1">
+                            <div class="pad-surface">
+                                <span class="pad-label">TOM 1</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="5" data-sound="tom2">
+                            <div class="pad-surface">
+                                <span class="pad-label">TOM 2</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="6" data-sound="tom3">
+                            <div class="pad-surface">
+                                <span class="pad-label">TOM 3</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="7" data-sound="tom4">
+                            <div class="pad-surface">
+                                <span class="pad-label">TOM 4</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Row 3 -->
+                        <div class="pad" data-pad-id="8" data-sound="hihat1">
+                            <div class="pad-surface">
+                                <span class="pad-label">HIHAT 1</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="9" data-sound="hihat2">
+                            <div class="pad-surface">
+                                <span class="pad-label">HIHAT 2</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="10" data-sound="crash1">
+                            <div class="pad-surface">
+                                <span class="pad-label">CRASH 1</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="11" data-sound="crash2">
+                            <div class="pad-surface">
+                                <span class="pad-label">CRASH 2</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Row 4 (Bottom) -->
+                        <div class="pad" data-pad-id="12" data-sound="kick1">
+                            <div class="pad-surface">
+                                <span class="pad-label">KICK 1</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="13" data-sound="kick2">
+                            <div class="pad-surface">
+                                <span class="pad-label">KICK 2</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="14" data-sound="snare1">
+                            <div class="pad-surface">
+                                <span class="pad-label">SNARE 1</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                        <div class="pad" data-pad-id="15" data-sound="snare2">
+                            <div class="pad-surface">
+                                <span class="pad-label">SNARE 2</span>
+                                <div class="pad-light"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Starrypad Brand Label -->
+                    <div class="starrypad-label">
+                        <span>DONNER</span>
+                        <span class="model">STARRYPAD</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Debug Panel (shown when debug mode is on) -->
+            <section class="debug-panel" id="debug-panel">
+                <h2>🔧 Debug Mode</h2>
+                <div class="debug-content">
+                    <div class="debug-section">
+                        <h3>MIDI Device</h3>
+                        <div id="device-info" class="device-info">
+                            <span>No device connected</span>
+                        </div>
+                    </div>
+                    
+                    <div class="debug-section">
+                        <h3>Live MIDI Input</h3>
+                        <div id="midi-log" class="midi-log">
+                            <div class="log-entry">Waiting for MIDI input...</div>
+                        </div>
+                        <button id="clear-log" class="btn btn-small">Clear Log</button>
+                    </div>
+                    
+                    <div class="debug-section">
+                        <h3>Note Mapping</h3>
+                        <div id="note-mapping" class="note-mapping">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pad LED colours (written to the device) -->
+            <section class="colors-panel" id="colors-panel">
+                <h2>🎨 Pad Colours</h2>
+                <div class="bank-tabs">
+                    <button class="bank-tab active" data-bank="A">Bank A</button>
+                    <button class="bank-tab" data-bank="B">Bank B</button>
+                    <button class="bank-tab" data-bank="C">Bank C</button>
+                </div>
+                <div id="color-grid" class="color-grid"><!-- built by app.js --></div>
+                <div class="palette-row"><span>Hit</span><div class="palette" data-slot="hit"></div></div>
+                <div class="palette-row"><span>Idle</span><div class="palette" data-slot="idle"></div></div>
+                <div class="color-actions">
+                    <button id="colors-select-all" class="btn btn-small">Select all</button>
+                    <button id="colors-load" class="btn btn-small">Load from pad</button>
+                    <button id="colors-send" class="btn btn-small btn-send">Send to pad</button>
+                </div>
+                <div id="colors-status" class="colors-status">Click pads to select, then pick a colour.</div>
+            </section>
+
+            <!-- Activity Log -->
+            <section class="activity-panel">
+                <h2>🎵 Activity</h2>
+                <div id="activity-log" class="activity-log">
+                    <div class="activity-entry">Ready to receive MIDI input from Starrypad</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
